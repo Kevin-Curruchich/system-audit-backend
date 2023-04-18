@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.raw({ type: "application/vnd.custom-type" }));
 app.use(express.text({ type: "text/html" }));
 
-app.get("/todos", async (req, res) => {
+app.get("/todos-view", async (req, res) => {
   const todos = await prisma.todo.findMany({
     orderBy: { createdAt: "desc" },
   });
@@ -67,10 +67,10 @@ app.get("/", async (req, res) => {
     GET, POST /todos
     GET, PUT, DELETE /todos/:id
   </pre>
-  `.trim(),
+  `.trim()
   );
 });
 
 app.listen(Number(port), "0.0.0.0", () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at http://localhost:${port}`);
 });
