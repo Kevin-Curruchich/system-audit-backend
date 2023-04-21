@@ -10,9 +10,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Todo {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  text      String
-  completed Boolean
+generator class_validator {
+  provider = "prisma-class-validator-generator"
+}
+
+model Student {
+  studentId          String      @id @default(uuid())
+  studentName        String
+  studnetLastName    String
+  studentDni         String
+  studentPhone       String
+  studentEmail       String
+  studentStartDate   DateTime
+  createdAt          DateTime    @default(now())
+  StudentType        StudentType @relation(fields: [studentTypeStudent], references: [studentTypeId])
+  studentTypeStudent String
+}
+
+model StudentType {
+  studentTypeId   String    @id @default(uuid())
+  studentTypeName String
+  studentTypeDesc String
+  student         Student[]
 }
