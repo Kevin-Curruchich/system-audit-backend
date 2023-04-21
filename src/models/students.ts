@@ -7,9 +7,13 @@ export const getStudentTypes = async () => {
   return studentTypes;
 };
 
-export const getStudents = async () => {
-  const studentTypes = await prisma.student.findMany();
-  return studentTypes;
+export const getStudents = async (page: number, take: number) => {
+  const total = await prisma.student.count();
+  const studentTypes = await prisma.student.findMany({
+    skip: (page - 1) * take,
+    take,
+  });
+  return { data: studentTypes, total };
 };
 
 export const postStudent = async (studentData: Student) => {
@@ -21,8 +25,6 @@ export const postStudentTypes = async (studentTypeData: StudentType) => {
   const studentType = await prisma.studentType.create({
     data: studentTypeData,
   });
-
-  console.log({ studentType });
 
   return studentType;
 };

@@ -10,7 +10,8 @@ import {
 //get methods
 export const getStudentsController = async (req: Request, res: Response) => {
   try {
-    const students = await getStudents();
+    const { page, take } = req.query;
+    const students = await getStudents(Number(page), Number(take));
     res.json(students);
   } catch (error) {
     console.log(error);
