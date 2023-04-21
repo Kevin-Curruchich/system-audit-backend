@@ -1,4 +1,4 @@
-import { IsString, IsDefined, IsOptional } from "class-validator";
+import { IsString, IsDefined } from "class-validator";
 import { Student } from "./";
 
 export class StudentType {
@@ -14,6 +14,6 @@ export class StudentType {
     @IsString()
     studentTypeDesc!: string;
 
-    @IsOptional()
-    student?: Student;
+    @IsDefined()
+    student!: Student[];
 }
