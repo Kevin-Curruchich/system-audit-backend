@@ -7,7 +7,7 @@ export interface StudentType {
 export interface Student {
   studentId: string;
   studentName: string;
-  studnetLastName: string;
+  studentLastName: string;
   studentDni: string;
   studentPhone: string;
   studentEmail: string;

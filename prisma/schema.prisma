@@ -15,16 +15,18 @@ generator client {
 // }
 
 model Student {
-  studentId          String      @id @default(uuid())
-  studentName        String
-  studnetLastName    String
-  studentDni         String
-  studentPhone       String
-  studentEmail       String
-  studentStartDate   DateTime
-  createdAt          DateTime    @default(now())
-  StudentType        StudentType @relation(fields: [studentTypeStudent], references: [studentTypeId])
-  studentTypeStudent String
+  studentId        String         @id @default(uuid())
+  studentName      String
+  studentLastName  String
+  studentDni       String
+  studentPhone     String
+  studentEmail     String
+  studentStartDate DateTime       @db.Date
+  createdAt        DateTime       @default(now()) @db.Date
+  StudentType      StudentType    @relation(fields: [studentTypeId], references: [studentTypeId])
+  studentTypeId    String
+  StudentStatus    StudentStatus? @relation(fields: [studentStatusId], references: [studentStatusId])
+  studentStatusId  String
 }
 
 model StudentType {
@@ -32,4 +34,11 @@ model StudentType {
   studentTypeName String
   studentTypeDesc String
   student         Student[]
+}
+
+model StudentStatus {
+  studentStatusId   String    @id @default(uuid())
+  studentStatusName String
+  studentStatusDesc String
+  student           Student[]
 }

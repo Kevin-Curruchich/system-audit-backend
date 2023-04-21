@@ -1,6 +1,6 @@
 import prisma from "../utils/db";
 
-import { Student, StudentType } from "@prisma/client";
+import { Student, StudentStatus, StudentType } from "@prisma/client";
 
 export const getStudentTypes = async () => {
   const studentTypes = await prisma.studentType.findMany();
@@ -12,12 +12,18 @@ export const getStudents = async (page: number, take: number) => {
   const studentTypes = await prisma.student.findMany({
     skip: (page - 1) * take,
     take,
+    include: { StudentType: true },
   });
   return { data: studentTypes, total };
 };
 
 export const postStudent = async (studentData: Student) => {
   const student = await prisma.student.create({ data: studentData });
+  return student;
+};
+
+export const postStudentStatus = async (statusData: StudentStatus) => {
+  const student = await prisma.studentStatus.create({ data: statusData });
   return student;
 };
 

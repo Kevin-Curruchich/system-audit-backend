@@ -11,10 +11,10 @@ const router = express.Router();
 
 //get students
 router.get("/", getStudentsController);
-router.get("/student-types", getStudentTypesController);
+router.get("/types", getStudentTypesController);
 
 //post students
 router.post("/", postStudentController);
-router.post("/student-types", postStudentTypesController);
+router.post("/types", postStudentTypesController);
 
 export default router;
