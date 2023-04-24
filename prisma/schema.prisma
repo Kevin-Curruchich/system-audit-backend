@@ -10,10 +10,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// generator class_validator {
-//   provider = "prisma-class-validator-generator"
-// }
-
 model Student {
   studentId        String         @id @default(uuid())
   studentName      String
