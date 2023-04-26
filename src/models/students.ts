@@ -12,7 +12,7 @@ export const getStudents = async (page: number, take: number) => {
   const studentTypes = await prisma.student.findMany({
     skip: (page - 1) * take,
     take,
-    include: { StudentType: true },
+    include: { StudentType: true, StudentStatus: true },
   });
   return { data: studentTypes, total };
 };

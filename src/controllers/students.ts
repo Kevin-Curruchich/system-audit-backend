@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { v4 as uuid } from "uuid";
 import moment from "moment";
 import {
@@ -46,7 +47,9 @@ export const postStudentController = async (req: Request, res: Response) => {
     studentTypeId,
   } = req.body;
   try {
-    const student = await postStudent({
+    const activeStatus = await getStudentTypes();
+
+    const response = await postStudent({
       studentId: uuid(),
       studentName,
       studentLastName,
@@ -56,11 +59,14 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
       createdAt: new Date(new Date().toUTCString()),
       studentTypeId,
-      studentStatusId: "cf28faa2-7bc7-4d67-ba56-46a76fa7d68f",
+      studentStatusId: "92db2b1f-4daa-4e3a-9989-41a15f765f8c",
     });
-    res.status(201).json(student);
+    res.status(201).json(response);
   } catch (err) {
-    console.log({ err });
+    if (err instanceof PrismaClientKnownRequestError) {
+      console.log({ mes: "catch", err });
+      return res.status(404).json({ status: "error", message: err.message });
+    }
     res.status(500).json({ message: "Internal Server Error", err });
   }
 };
@@ -80,6 +86,6 @@ export const postStudentTypesController = async (
     res.status(201).json(studentType);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", err });
   }
 };
