@@ -8,6 +8,7 @@ import {
   postStudentTypes,
   postStudent,
 } from "../models/students";
+import studentStatus from "../constants/studentStatus";
 
 //get methods
 export const getStudentsController = async (req: Request, res: Response) => {
@@ -47,8 +48,6 @@ export const postStudentController = async (req: Request, res: Response) => {
     studentTypeId,
   } = req.body;
   try {
-    const activeStatus = await getStudentTypes();
-
     const response = await postStudent({
       studentId: uuid(),
       studentName,
@@ -57,9 +56,9 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentPhone,
       studentEmail,
       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
-      createdAt: new Date(new Date().toUTCString()),
+      createdAt: new Date(moment(new Date()).format("YYYY-MM-DD")),
       studentTypeId,
-      studentStatusId: "92db2b1f-4daa-4e3a-9989-41a15f765f8c",
+      studentStatusId: studentStatus.ACTIVE,
     });
     res.status(201).json(response);
   } catch (err) {
