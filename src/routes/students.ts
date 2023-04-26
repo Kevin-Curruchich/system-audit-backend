@@ -2,6 +2,7 @@
 import express from "express";
 import {
   getStudentsController,
+  getStudentByIdController,
   getStudentTypesController,
   postStudentTypesController,
   postStudentController,
@@ -12,6 +13,7 @@ const router = express.Router();
 //get students
 router.get("/", getStudentsController);
 router.get("/types", getStudentTypesController);
+router.get("/student/:id", getStudentByIdController);
 
 //post students
 router.post("/", postStudentController);

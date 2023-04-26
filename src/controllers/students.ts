@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import moment from "moment";
 import {
   getStudents,
+  getStudent,
   getStudentTypes,
   postStudentTypes,
   postStudent,
@@ -17,6 +18,18 @@ export const getStudentsController = async (req: Request, res: Response) => {
     const students = await getStudents(Number(page), Number(take));
 
     res.json(students);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getStudentByIdController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const student = await getStudent(String(id));
+
+    res.json(student);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
