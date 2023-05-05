@@ -1,0 +1,10 @@
+{
+  "collectionName": "Matricula",
+  "collectionDesc": "Matricula de cursos asignados",
+  "collectionTypeId": "6c0e7b33-6523-475c-bbef-eedb56f3de07",
+  "collectionBaseAmount": 0,
+  "collectionStudentApply": [
+    { "studentTypeId": "c82ce54d-e0fb-44a2-8574-f452b1199369" },
+    { "studentTypeId": "3e05b261-97e1-4f56-9835-898f453f7a04" }
+  ]
+}

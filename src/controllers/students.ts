@@ -51,17 +51,18 @@ export const getStudentTypesController = async (
 
 //post mothds
 export const postStudentController = async (req: Request, res: Response) => {
-  const {
-    studentName,
-    studentLastName,
-    studentDni,
-    studentPhone,
-    studentEmail,
-    studentStartDate,
-    studentTypeId,
-  } = req.body;
   try {
-    const response = await postStudent({
+    const {
+      studentName,
+      studentLastName,
+      studentDni,
+      studentPhone,
+      studentEmail,
+      studentStartDate,
+      studentTypeId,
+    } = req.body;
+
+    const data = {
       studentId: uuid(),
       studentName,
       studentLastName,
@@ -72,7 +73,9 @@ export const postStudentController = async (req: Request, res: Response) => {
       createdAt: new Date(moment(new Date()).format("YYYY-MM-DD")),
       studentTypeId,
       studentStatusId: studentStatus.ACTIVE,
-    });
+    };
+
+    const response = await postStudent(data);
     res.status(201).json(response);
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError) {

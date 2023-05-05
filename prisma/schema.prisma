@@ -11,18 +11,19 @@ generator client {
 }
 
 model Student {
-  studentId        String         @id @default(uuid())
-  studentName      String
-  studentLastName  String
-  studentDni       String
-  studentPhone     String
-  studentEmail     String
-  studentStartDate DateTime       @db.Date
-  createdAt        DateTime       @default(now()) @db.Date
-  StudentType      StudentType    @relation(fields: [studentTypeId], references: [studentTypeId])
-  studentTypeId    String
-  StudentStatus    StudentStatus? @relation(fields: [studentStatusId], references: [studentStatusId])
-  studentStatusId  String
+  studentId         String              @id @default(uuid())
+  studentName       String
+  studentLastName   String
+  studentDni        String
+  studentPhone      String
+  studentEmail      String
+  studentStartDate  DateTime            @db.Date
+  createdAt         DateTime            @default(now()) @db.Date
+  StudentType       StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
+  studentTypeId     String
+  StudentStatus     StudentStatus?      @relation(fields: [studentStatusId], references: [studentStatusId])
+  studentStatusId   String
+  CollectionStudent CollectionStudent[]
 }
 
 model StudentType {
@@ -37,4 +38,33 @@ model StudentStatus {
   studentStatusName String
   studentStatusDesc String
   student           Student[]
+}
+
+model CollectionType {
+  collectionTypeId   String       @id @default(uuid())
+  collectionTypeName String
+  collectionTypeDesc String
+  collection         Collection[]
+}
+
+model Collection {
+  collectionId           String              @id @default(uuid())
+  collectionName         String
+  collectionDesc         String
+  collectionType         CollectionType      @relation(fields: [collectionTypeId], references: [collectionTypeId])
+  collectionTypeId       String
+  collectionBaseAmount   Float
+  collectionStudentApply Json[]
+  CollectionStudent      CollectionStudent[]
+}
+
+model CollectionStudent {
+  collectionStudentId     String     @id @default(uuid())
+  collection              Collection @relation(fields: [collectionId], references: [collectionId])
+  collectionId            String
+  student                 Student    @relation(fields: [studentId], references: [studentId])
+  studentId               String
+  collectionStudentAmount Float
+  collectionStudentDate   DateTime   @db.Date
+  collectionDescription   String
 }
