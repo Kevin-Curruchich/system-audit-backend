@@ -90,7 +90,7 @@ export const postCollectionStudentController = async (
     const {
       collectionId,
       studentId,
-      collectionStudentAmount,
+      collectionStudentAmountOwed,
       collectionStudentDate,
       collectionDescription,
     } = req.body;
@@ -99,10 +99,12 @@ export const postCollectionStudentController = async (
       collectionStudentId: uuid(),
       collectionId,
       studentId,
-      collectionStudentAmount,
+      collectionStudentAmountOwed,
+      collectionStudentAmountPaid: 0,
       collectionStudentDate: new Date(
         moment(collectionStudentDate).format("YYYY-MM-DD")
       ),
+      collectionStudentUpdateDate: new Date(),
       collectionDescription,
     };
 

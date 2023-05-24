@@ -12,6 +12,19 @@ export const getStudents = async (page: number, take: number) => {
   return { data: students, total };
 };
 
+export const getStudentsList = async () => {
+  const data = await prisma.student.findMany({
+    select: {
+      studentId: true,
+      studentFullName: true,
+      studentTypeId: true,
+    },
+  });
+  const total = data.length;
+
+  return { data, total };
+};
+
 export const getStudent = async (id: string) => {
   const studentData = await prisma.student.findUnique({
     where: { studentId: id },

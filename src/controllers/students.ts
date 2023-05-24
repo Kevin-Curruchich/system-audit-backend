@@ -8,6 +8,7 @@ import {
   getStudentTypes,
   postStudentTypes,
   postStudent,
+  getStudentsList,
 } from "../models/students";
 import studentStatus from "../constants/studentStatus";
 
@@ -16,6 +17,20 @@ export const getStudentsController = async (req: Request, res: Response) => {
   try {
     const { page, take } = req.query;
     const students = await getStudents(Number(page), Number(take));
+
+    res.json(students);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getStudentsListController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const students = await getStudentsList();
 
     res.json(students);
   } catch (error) {
@@ -64,8 +79,9 @@ export const postStudentController = async (req: Request, res: Response) => {
 
     const data = {
       studentId: uuid(),
-      studentName,
-      studentLastName,
+      studentName: studentName.toUpperCase(),
+      studentLastName: studentLastName.toUpperCase(),
+      studentFullName: `${studentName.toUpperCase()} ${studentLastName.toUpperCase()}`,
       studentDni,
       studentPhone,
       studentEmail,

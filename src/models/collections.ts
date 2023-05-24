@@ -29,8 +29,7 @@ export const getCollectionStudent = async (page: number, take: number) => {
       student: {
         select: {
           studentId: true,
-          studentName: true,
-          studentLastName: true,
+          studentFullName: true,
         },
       },
     },

@@ -14,6 +14,7 @@ model Student {
   studentId         String              @id @default(uuid())
   studentName       String
   studentLastName   String
+  studentFullName   String
   studentDni        String
   studentPhone      String
   studentEmail      String
@@ -24,6 +25,7 @@ model Student {
   StudentStatus     StudentStatus?      @relation(fields: [studentStatusId], references: [studentStatusId])
   studentStatusId   String
   CollectionStudent CollectionStudent[]
+  Payment           Payment[]
 }
 
 model StudentType {
@@ -59,12 +61,26 @@ model Collection {
 }
 
 model CollectionStudent {
-  collectionStudentId     String     @id @default(uuid())
-  collection              Collection @relation(fields: [collectionId], references: [collectionId])
-  collectionId            String
-  student                 Student    @relation(fields: [studentId], references: [studentId])
-  studentId               String
-  collectionStudentAmount Float
-  collectionStudentDate   DateTime   @db.Date
-  collectionDescription   String
+  collectionStudentId         String     @id @default(uuid())
+  collection                  Collection @relation(fields: [collectionId], references: [collectionId])
+  collectionId                String
+  student                     Student    @relation(fields: [studentId], references: [studentId])
+  studentId                   String
+  collectionStudentAmountOwed Float
+  collectionStudentAmountPaid Float      @default(0)
+  collectionStudentDate       DateTime   @db.Date
+  collectionStudentUpdateDate DateTime   @db.Date
+  collectionDescription       String
+  Payment                     Payment[]
+}
+
+model Payment {
+  paymentId           String            @id @default(uuid())
+  student             Student           @relation(fields: [studentId], references: [studentId])
+  studentId           String
+  collectionStudent   CollectionStudent @relation(fields: [collectionStudentId], references: [collectionStudentId])
+  collectionStudentId String
+  paymentDate         DateTime          @db.Date
+  paymentAmount       Float
+  paymentDescription  String
 }
