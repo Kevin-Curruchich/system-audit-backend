@@ -8,21 +8,27 @@ datasource db {
 }
 
 model Student {
-  studentId         String              @id @default(uuid())
-  studentName       String
-  studentLastName   String
-  studentFullName   String
-  studentDni        String
-  studentPhone      String
-  studentEmail      String
-  studentStartDate  DateTime            @db.Date
-  createdAt         DateTime            @default(now()) @db.Date
-  studentTypeId     String
-  studentStatusId   String
-  CollectionStudent CollectionStudent[]
-  Payment           Payment[]
-  StudentStatus     StudentStatus       @relation(fields: [studentStatusId], references: [studentStatusId])
-  StudentType       StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
+  studentId          String              @id @default(uuid())
+  studentName        String
+  studentLastName    String
+  studentFullName    String
+  studentDni         String
+  studentPhone       String
+  studentEmail       String
+  studentStartDate   DateTime            @db.Date
+  createdAt          DateTime            @default(now()) @db.Date
+  studentTypeId      String
+  studentCurrentYear Int?
+  studentStatusId    String
+  studentAddress     String?
+  studentBirthDate   DateTime?           @db.Date
+  studentCountry     String?
+  studentCity        String?
+  studentProvince    String?
+  CollectionStudent  CollectionStudent[]
+  Payment            Payment[]
+  StudentStatus      StudentStatus       @relation(fields: [studentStatusId], references: [studentStatusId])
+  StudentType        StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
 }
 
 model StudentType {
@@ -57,6 +63,23 @@ model Collection {
   CollectionStudent      CollectionStudent[]
 }
 
+model Quartetly {
+  quartetlyId       String              @id @default(uuid())
+  quartetlyName     String
+  quartetlyStart    DateTime            @db.Date
+  quartetlyEnd      DateTime            @db.Date
+  QuartetlyStatus   QuartetlyStatus?    @relation(fields: [quartetlyStatusId], references: [quartetlyStatusId])
+  quartetlyStatusId String?
+  quartetly         CollectionStudent[]
+}
+
+model QuartetlyStatus {
+  quartetlyStatusId   String      @id @default(uuid())
+  quartetlyStatusName String
+  quartetlyStatusDesc String
+  quartetly           Quartetly[]
+}
+
 model CollectionStudent {
   collectionStudentId         String     @id @default(uuid())
   collectionId                String
@@ -69,6 +92,8 @@ model CollectionStudent {
   collection                  Collection @relation(fields: [collectionId], references: [collectionId])
   student                     Student    @relation(fields: [studentId], references: [studentId])
   Payment                     Payment[]
+  Quartetly                   Quartetly? @relation(fields: [quartetlyQuartetlyId], references: [quartetlyId])
+  quartetlyQuartetlyId        String?
 }
 
 model Payment {
@@ -78,6 +103,7 @@ model Payment {
   paymentDate         DateTime          @db.Date
   paymentAmount       Float
   paymentDescription  String
+  paymentSlip         String?
   collectionStudent   CollectionStudent @relation(fields: [collectionStudentId], references: [collectionStudentId])
   student             Student           @relation(fields: [studentId], references: [studentId])
 }

@@ -25,6 +25,7 @@ export const postPaymentController = async (req: Request, res: Response) => {
       paymentDate,
       paymentAmount,
       paymentDescription,
+      paymentSlip,
     } = req.body;
 
     const data = {
@@ -34,6 +35,7 @@ export const postPaymentController = async (req: Request, res: Response) => {
       paymentDate: new Date(paymentDate),
       paymentAmount,
       paymentDescription,
+      paymentSlip,
     };
 
     const collection = await postPayment(data);

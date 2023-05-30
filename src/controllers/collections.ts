@@ -131,6 +131,7 @@ export const postCollectionStudentController = async (
       collectionStudentAmountOwed,
       collectionStudentDate,
       collectionDescription,
+      quartetlyQuartetlyId,
     } = req.body;
 
     const data = {
@@ -144,6 +145,7 @@ export const postCollectionStudentController = async (
       ),
       collectionStudentUpdateDate: new Date(),
       collectionDescription,
+      quartetlyQuartetlyId,
     };
 
     const collectionStudent = await postCollectionStudent(data);

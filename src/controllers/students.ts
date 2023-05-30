@@ -87,6 +87,12 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentEmail,
       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
       createdAt: new Date(moment(new Date()).format("YYYY-MM-DD")),
+      studentCurrentYear: 1,
+      studentAddress: "",
+      studentCountry: "",
+      studentCity: "",
+      studentProvince: "",
+      studentBirthDate: new Date(moment(new Date()).format("YYYY-MM-DD")),
       studentTypeId,
       studentStatusId: studentStatus.ACTIVE,
     };
