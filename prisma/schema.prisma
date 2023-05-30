@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Student {
@@ -20,12 +17,12 @@ model Student {
   studentEmail      String
   studentStartDate  DateTime            @db.Date
   createdAt         DateTime            @default(now()) @db.Date
-  StudentType       StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
   studentTypeId     String
-  StudentStatus     StudentStatus?      @relation(fields: [studentStatusId], references: [studentStatusId])
   studentStatusId   String
   CollectionStudent CollectionStudent[]
   Payment           Payment[]
+  StudentStatus     StudentStatus       @relation(fields: [studentStatusId], references: [studentStatusId])
+  StudentType       StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
 }
 
 model StudentType {
@@ -53,34 +50,34 @@ model Collection {
   collectionId           String              @id @default(uuid())
   collectionName         String
   collectionDesc         String
-  collectionType         CollectionType      @relation(fields: [collectionTypeId], references: [collectionTypeId])
   collectionTypeId       String
   collectionBaseAmount   Float
   collectionStudentApply Json[]
+  collectionType         CollectionType      @relation(fields: [collectionTypeId], references: [collectionTypeId])
   CollectionStudent      CollectionStudent[]
 }
 
 model CollectionStudent {
   collectionStudentId         String     @id @default(uuid())
-  collection                  Collection @relation(fields: [collectionId], references: [collectionId])
   collectionId                String
-  student                     Student    @relation(fields: [studentId], references: [studentId])
   studentId                   String
   collectionStudentAmountOwed Float
   collectionStudentAmountPaid Float      @default(0)
   collectionStudentDate       DateTime   @db.Date
   collectionStudentUpdateDate DateTime   @db.Date
   collectionDescription       String
+  collection                  Collection @relation(fields: [collectionId], references: [collectionId])
+  student                     Student    @relation(fields: [studentId], references: [studentId])
   Payment                     Payment[]
 }
 
 model Payment {
   paymentId           String            @id @default(uuid())
-  student             Student           @relation(fields: [studentId], references: [studentId])
   studentId           String
-  collectionStudent   CollectionStudent @relation(fields: [collectionStudentId], references: [collectionStudentId])
   collectionStudentId String
   paymentDate         DateTime          @db.Date
   paymentAmount       Float
   paymentDescription  String
+  collectionStudent   CollectionStudent @relation(fields: [collectionStudentId], references: [collectionStudentId])
+  student             Student           @relation(fields: [studentId], references: [studentId])
 }
