@@ -13,16 +13,23 @@ export const getPayments = async (page: number, take: number) => {
           collectionStudentId: true,
           collectionStudentAmountOwed: true,
           collectionStudentAmountPaid: true,
-          collectionDescription: true,
+          collection: {
+            select: {
+              collectionId: true,
+              collectionName: true,
+            },
+          },
         },
       },
       student: {
         select: {
           studentId: true,
-          studentName: true,
-          studentLastName: true,
+          studentFullName: true,
         },
       },
+    },
+    orderBy: {
+      paymentDate: "desc",
     },
   });
   return { data: payments, total };

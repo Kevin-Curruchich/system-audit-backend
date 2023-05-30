@@ -5,6 +5,8 @@ import {
   getCollectionTypes,
   getCollections,
   getCollectionStudent,
+  getCollectionsByStudent,
+  getCollectionsOwedByStudent,
   postCollection,
   postCollectionStudent,
 } from "../models/collections";
@@ -46,6 +48,42 @@ export const getCollectionStudentController = async (
     );
 
     res.json(collectionStudent);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getCollectionsByIdController = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  const studentIdToSearch = String(id);
+
+  try {
+    const collections = await getCollectionsByStudent(studentIdToSearch);
+
+    res.json(collections);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getCollectionsOwedByIdController = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  const studentIdToSearch = String(id);
+
+  try {
+    const collections = await getCollectionsOwedByStudent(studentIdToSearch);
+
+    res.json(collections);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });

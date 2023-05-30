@@ -3,9 +3,11 @@ import express from "express";
 import {
   getCollectionTypesController,
   getCollectionsController,
+  getCollectionsByIdController,
+  getCollectionStudentController,
+  getCollectionsOwedByIdController,
   postCollectionController,
   postCollectionStudentController,
-  getCollectionStudentController,
 } from "../controllers/collections";
 
 const router = express.Router();
@@ -14,7 +16,8 @@ const router = express.Router();
 router.get("/", getCollectionsController);
 router.get("/types", getCollectionTypesController);
 router.get("/students", getCollectionStudentController);
-// router.get("/student/:id", getStudentByIdController);
+router.get("/students/:id", getCollectionsByIdController);
+router.get("/students/:id/owed", getCollectionsOwedByIdController);
 
 //post collections
 router.post("/", postCollectionController);

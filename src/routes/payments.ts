@@ -1,15 +1,15 @@
 // routes/users.js
 import express from "express";
 import {
-  getPaymentssController,
+  getPaymentsController,
   postPaymentController,
 } from "../controllers/payments";
 
 const router = express.Router();
 
 //get payments
-router.get("/", getPaymentssController);
-// router.get("/types", getStudentTypesController);
+router.get("/", getPaymentsController);
+// router.get("/student/:id", getStudentTypesController);
 // router.get("/student/:id", getStudentByIdController);
 
 //post payments

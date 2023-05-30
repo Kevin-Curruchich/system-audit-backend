@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 import { getPayments, postPayment } from "../models/payments";
 
 //get controllers
-export const getPaymentssController = async (req: Request, res: Response) => {
+export const getPaymentsController = async (req: Request, res: Response) => {
   try {
     const { page, take } = req.query;
     const collectionTypes = await getPayments(Number(page), Number(take));
