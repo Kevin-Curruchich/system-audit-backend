@@ -72,6 +72,29 @@ export const getCollectionsOwedByStudent = async (
   return collections;
 };
 
+export const getCollectionsHistoryByStudent = async (
+  studentIdToSearch: string
+) => {
+  const collections = await prisma.collectionStudent.findMany({
+    select: {
+      collectionStudentId: true,
+      collection: {
+        select: {
+          collectionId: true,
+          collectionName: true,
+        },
+      },
+      collectionStudentAmountOwed: true,
+      Payment: true,
+    },
+    where: {
+      studentId: studentIdToSearch,
+    },
+  });
+
+  return collections;
+};
+
 //post collections
 export const postCollection = async (collectionData: Collection) => {
   const collection = await prisma.collection.create({

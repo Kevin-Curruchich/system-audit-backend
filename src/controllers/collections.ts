@@ -7,6 +7,7 @@ import {
   getCollectionStudent,
   getCollectionsByStudent,
   getCollectionsOwedByStudent,
+  getCollectionsHistoryByStudent,
   postCollection,
   postCollectionStudent,
 } from "../models/collections";
@@ -82,6 +83,24 @@ export const getCollectionsOwedByIdController = async (
 
   try {
     const collections = await getCollectionsOwedByStudent(studentIdToSearch);
+
+    res.json(collections);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getCollectionsStudentByIdController = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  const studentIdToSearch = String(id);
+
+  try {
+    const collections = await getCollectionsHistoryByStudent(studentIdToSearch);
 
     res.json(collections);
   } catch (error) {
