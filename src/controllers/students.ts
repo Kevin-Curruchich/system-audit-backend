@@ -15,8 +15,27 @@ import studentStatus from "../constants/studentStatus";
 //get methods
 export const getStudentsController = async (req: Request, res: Response) => {
   try {
-    const { page, take } = req.query;
-    const students = await getStudents(Number(page), Number(take));
+    const {
+      page,
+      take,
+      search,
+      studentTypeId,
+      studentStatusId,
+      studentCurrentYear,
+    } = req.query;
+
+    const searchQuery = search ? String(search) : "";
+    const currentYear =
+      studentCurrentYear === "" ? undefined : Number(studentCurrentYear);
+
+    const students = await getStudents(
+      Number(page),
+      Number(take),
+      String(searchQuery),
+      String(studentTypeId),
+      String(studentStatusId),
+      currentYear
+    );
 
     res.json(students);
   } catch (error) {
@@ -75,6 +94,7 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentEmail,
       studentStartDate,
       studentTypeId,
+      studentCurrentYear,
     } = req.body;
 
     const data = {
@@ -87,7 +107,7 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentEmail,
       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
       createdAt: new Date(moment(new Date()).format("YYYY-MM-DD")),
-      studentCurrentYear: 1,
+      studentCurrentYear: studentCurrentYear,
       studentAddress: "",
       studentCountry: "",
       studentCity: "",

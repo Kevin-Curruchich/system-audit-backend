@@ -2,13 +2,42 @@ import prisma from "../utils/db";
 
 import { Student, StudentStatus, StudentType } from "@prisma/client";
 
-export const getStudents = async (page: number, take: number) => {
-  const total = await prisma.student.count();
+export const getStudents = async (
+  page: number,
+  take: number,
+  searchQuery: string,
+  studentTypeId: string,
+  studentStatusId: string,
+  currentYear: any
+) => {
   const students = await prisma.student.findMany({
     skip: (page - 1) * take,
     take,
+    where: {
+      studentFullName: {
+        contains: searchQuery,
+        mode: "insensitive",
+      },
+      studentTypeId: {
+        contains: studentTypeId,
+      },
+      studentStatusId: {
+        contains: studentStatusId,
+      },
+      studentCurrentYear: {
+        equals: currentYear,
+      },
+    },
     include: { StudentType: true, StudentStatus: true },
   });
+
+  let total = 0;
+  if (searchQuery) {
+    total = students.length;
+  } else {
+    total = await prisma.student.count();
+  }
+
   return { data: students, total };
 };
 
