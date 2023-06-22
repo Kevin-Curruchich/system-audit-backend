@@ -85,6 +85,7 @@ export const getCollectionsHistoryByStudent = async (
         },
       },
       collectionStudentAmountOwed: true,
+      collectionStudentAmountPaid: true,
       Payment: true,
     },
     where: {
