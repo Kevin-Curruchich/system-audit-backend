@@ -42,10 +42,16 @@ export const getCollectionStudentController = async (
   res: Response
 ) => {
   try {
-    const { page, take } = req.query;
+    const { page, take, searchQuery, currentYear } = req.query;
+
+    const studentCurrentYear =
+      currentYear === "" ? undefined : Number(currentYear);
+
     const collectionStudent = await getCollectionStudent(
       Number(page),
-      Number(take)
+      Number(take),
+      String(searchQuery),
+      studentCurrentYear
     );
 
     res.json(collectionStudent);

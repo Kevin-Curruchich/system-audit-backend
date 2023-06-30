@@ -14,8 +14,12 @@ export const getCollections = async () => {
   return collections;
 };
 
-export const getCollectionStudent = async (page: number, take: number) => {
-  const total = await prisma.collectionStudent.count();
+export const getCollectionStudent = async (
+  page: number,
+  take: number,
+  searchQuery: string,
+  currentYear: any
+) => {
   const collectionStudent = await prisma.collectionStudent.findMany({
     skip: (page - 1) * take,
     take,
@@ -33,8 +37,42 @@ export const getCollectionStudent = async (page: number, take: number) => {
         },
       },
     },
+    where: {
+      student: {
+        studentFullName: {
+          contains: searchQuery,
+          mode: "insensitive",
+        },
+        studentCurrentYear: {
+          equals: currentYear,
+        },
+      },
+    },
   });
-  return { data: collectionStudent, total };
+
+  const collectionStudentByStudentGroupedByStudent = collectionStudent.reduce(
+    (acc, collectionStudent) => {
+      const { studentId } = collectionStudent.student;
+      if (!acc[studentId]) {
+        acc[studentId] = {
+          studentId,
+          studentFullName: collectionStudent.student.studentFullName,
+          children: [],
+        };
+      }
+      acc[studentId].children.push(collectionStudent);
+      return acc;
+    },
+    {} as Record<string, any>
+  );
+
+  const collectionStudentByStudent = Object.values(
+    collectionStudentByStudentGroupedByStudent
+  );
+
+  const total = collectionStudentByStudent.length;
+
+  return { data: collectionStudentByStudent, total };
 };
 
 export const getCollectionsByStudent = async (studentIdToSearch: string) => {
@@ -57,6 +95,12 @@ export const getCollectionsOwedByStudent = async (
         select: {
           collectionId: true,
           collectionName: true,
+        },
+      },
+      Quartetly: {
+        select: {
+          quartetlyId: true,
+          quartetlyName: true,
         },
       },
       collectionStudentAmountOwed: true,

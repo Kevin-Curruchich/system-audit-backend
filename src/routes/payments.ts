@@ -2,6 +2,7 @@
 import express from "express";
 import {
   getPaymentsController,
+  getPaymentByIdController,
   postPaymentController,
 } from "../controllers/payments";
 
@@ -9,7 +10,7 @@ const router = express.Router();
 
 //get payments
 router.get("/", getPaymentsController);
-// router.get("/student/:id", getStudentTypesController);
+router.get("/:id", getPaymentByIdController);
 // router.get("/student/:id", getStudentByIdController);
 
 //post payments
