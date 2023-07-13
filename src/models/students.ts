@@ -62,6 +62,13 @@ export const getStudent = async (id: string) => {
   return { ...studentData };
 };
 
+export const getStudentByEmail = async (email: string) => {
+  const studentData = await prisma.student.findUnique({
+    where: { studentEmail: email },
+  });
+  return { ...studentData };
+};
+
 export const getStudentTypes = async () => {
   const studentTypes = await prisma.studentType.findMany();
   return studentTypes;

@@ -14,7 +14,7 @@ model Student {
   studentFullName    String
   studentDni         String
   studentPhone       String
-  studentEmail       String
+  studentEmail       String              @unique
   studentStartDate   DateTime            @db.Date
   createdAt          DateTime            @default(now()) @db.Date
   studentTypeId      String
@@ -29,6 +29,35 @@ model Student {
   Payment            Payment[]
   StudentStatus      StudentStatus       @relation(fields: [studentStatusId], references: [studentStatusId])
   StudentType        StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
+  User               User[]
+}
+
+model User {
+  userId       String         @id @default(uuid())
+  userName     String
+  userEmail    String         @unique
+  userPassword String
+  roleId       String
+  Role         Role           @relation(fields: [roleId], references: [roleId])
+  studentId    String?
+  Student      Student?       @relation(fields: [studentId], references: [studentId])
+  RefreshToken RefreshToken[]
+}
+
+model Role {
+  roleId   String @id @default(uuid())
+  roleName String
+  User     User[]
+}
+
+model RefreshToken {
+  id          String   @id @unique @default(uuid())
+  hashedToken String
+  userId      String
+  User        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model StudentType {
