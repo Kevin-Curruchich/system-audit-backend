@@ -30,6 +30,12 @@ export const getCollectionStudent = async (
           collectionName: true,
         },
       },
+      Quartetly: {
+        select: {
+          quartetlyId: true,
+          quartetlyName: true,
+        },
+      },
       student: {
         select: {
           studentId: true,
@@ -47,6 +53,9 @@ export const getCollectionStudent = async (
           equals: currentYear,
         },
       },
+    },
+    orderBy: {
+      collectionStudentAmountOwed: "desc",
     },
   });
 

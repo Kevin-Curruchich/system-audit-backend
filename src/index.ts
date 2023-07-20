@@ -4,6 +4,7 @@ import collections from "./routes/collections";
 import payments from "./routes/payments";
 import quartets from "./routes/quarters";
 import user from "./routes/user";
+import reports from "./routes/reports";
 import auth from "./routes/auth";
 import cors from "cors";
 import { isAuthenticated } from "./middlewares/authMiddleware";
@@ -17,6 +18,7 @@ app.use(express.text({ type: "text/html" }));
 
 app.use("/", auth);
 app.use("/user", user);
+app.use("/reports", reports);
 app.use("/students", isAuthenticated, studentsRouter);
 app.use("/collections", isAuthenticated, collections);
 app.use("/payments", isAuthenticated, payments);
