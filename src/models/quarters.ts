@@ -13,8 +13,27 @@ export const getQuartets = async (page: number, take: number) => {
   });
   return { data: quartetlys, total };
 };
+
 export const getQuartetsList = async () => {
   const quartetlys = await prisma.quartetly.findMany();
+  return quartetlys;
+};
+
+export const getQuartetsListByStudentId = async (id: string) => {
+  const quartetlys = await prisma.collectionStudent.findMany({
+    where: {
+      studentId: id,
+    },
+    include: {
+      Quartetly: {
+        select: {
+          quartetlyId: true,
+          quartetlyName: true,
+        },
+      },
+    },
+  });
+
   return quartetlys;
 };
 

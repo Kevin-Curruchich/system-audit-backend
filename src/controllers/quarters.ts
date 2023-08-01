@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import {
   getQuartets,
   getQuartetsList,
+  getQuartetsListByStudentId,
   postQuartetly,
 } from "../models/quarters";
 import quartetlyStatus from "../constants/quartetlyStatus";
@@ -27,6 +28,33 @@ export const getQuartersListController = async (
   try {
     const quarters = await getQuartetsList();
     res.json(quarters);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getStudentQuarterController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const quarters = await getQuartetsListByStudentId(String(id));
+
+    //get quartetly without duplicates
+    const quartetlyList = quarters.reduce((acc: any, curr: any) => {
+      const found = acc.find(
+        (item: any) => item.Quartetly.quartetlyId === curr.Quartetly.quartetlyId
+      );
+      if (!found) {
+        return acc.concat([curr]);
+      } else {
+        return acc;
+      }
+    }, []);
+
+    res.json(quartetlyList);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });

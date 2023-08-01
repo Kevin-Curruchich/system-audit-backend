@@ -18,7 +18,8 @@ export const getCollectionStudent = async (
   page: number,
   take: number,
   searchQuery: string,
-  currentYear: any
+  currentYear: any,
+  quartetlyId: string
 ) => {
   const collectionStudent = await prisma.collectionStudent.findMany({
     skip: (page - 1) * take,
@@ -51,6 +52,11 @@ export const getCollectionStudent = async (
         },
         studentCurrentYear: {
           equals: currentYear,
+        },
+      },
+      Quartetly: {
+        quartetlyId: {
+          contains: quartetlyId,
         },
       },
     },
@@ -126,7 +132,8 @@ export const getCollectionsOwedByStudent = async (
 };
 
 export const getCollectionsHistoryByStudent = async (
-  studentIdToSearch: string
+  studentIdToSearch: string,
+  quartetlyId: string
 ) => {
   const collections = await prisma.collectionStudent.findMany({
     select: {
@@ -140,9 +147,21 @@ export const getCollectionsHistoryByStudent = async (
       collectionStudentAmountOwed: true,
       collectionStudentAmountPaid: true,
       Payment: true,
+      Quartetly: {
+        select: {
+          quartetlyId: true,
+          quartetlyName: true,
+        },
+      },
     },
+
     where: {
       studentId: studentIdToSearch,
+      Quartetly: {
+        quartetlyId: {
+          contains: quartetlyId,
+        },
+      },
     },
   });
 

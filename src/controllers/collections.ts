@@ -42,7 +42,7 @@ export const getCollectionStudentController = async (
   res: Response
 ) => {
   try {
-    const { page, take, searchQuery, currentYear } = req.query;
+    const { page, take, searchQuery, currentYear, quartetlyId } = req.query;
 
     const studentCurrentYear =
       currentYear === "" ? undefined : Number(currentYear);
@@ -51,7 +51,8 @@ export const getCollectionStudentController = async (
       Number(page),
       Number(take),
       String(searchQuery),
-      studentCurrentYear
+      studentCurrentYear,
+      String(quartetlyId)
     );
 
     res.json(collectionStudent);
@@ -102,13 +103,33 @@ export const getCollectionsStudentByIdController = async (
   res: Response
 ) => {
   const { id } = req.params;
+  const { quartetlyId } = req.query;
 
   const studentIdToSearch = String(id);
+  const quartetlyIdToSearch = String(quartetlyId);
 
   try {
-    const collections = await getCollectionsHistoryByStudent(studentIdToSearch);
+    const collections = await getCollectionsHistoryByStudent(
+      studentIdToSearch,
+      quartetlyIdToSearch
+    );
 
-    res.json(collections);
+    //create a new array with all collections data but sort Payment array by date desc
+    const newCollections = collections.map((collection) => {
+      const newCollection = {
+        ...collection,
+        Payment: collection.Payment.sort((a, b) => {
+          return (
+            new Date(b.paymentDate).getTime() -
+            new Date(a.paymentDate).getTime()
+          );
+        }),
+      };
+
+      return newCollection;
+    });
+
+    res.json(newCollections);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });

@@ -12,9 +12,27 @@ export const reportByStudentController = async (
 ) => {
   try {
     const { id } = req.params;
+    const { quartetlyId } = req.query;
 
-    const collections = await getCollectionsHistoryByStudent(String(id));
+    const collections = await getCollectionsHistoryByStudent(
+      String(id),
+      String(quartetlyId)
+    );
     const studentData = await getStudent(String(id));
+
+    const newCollections = collections.map((collection) => {
+      const newCollection = {
+        ...collection,
+        Payment: collection.Payment.sort((a, b) => {
+          return (
+            new Date(b.paymentDate).getTime() -
+            new Date(a.paymentDate).getTime()
+          );
+        }),
+      };
+
+      return newCollection;
+    });
 
     const totalOwed = collections.reduce((acc, collection) => {
       return acc + collection.collectionStudentAmountOwed;
@@ -46,8 +64,8 @@ export const reportByStudentController = async (
       total,
     });
 
-    collections.forEach((element) => {
-      const sheetName = `${element.collection.collectionName}`;
+    newCollections.forEach((element, i) => {
+      const sheetName = `${element.collection.collectionName}-${element.Quartetly?.quartetlyName}`;
 
       const sheet = workBook.addWorksheet(sheetName);
 
@@ -98,7 +116,7 @@ export const reportByStudentController = async (
 
 export const reportByYearController = async (req: Request, res: Response) => {
   try {
-    const { page, take, searchQuery, currentYear } = req.query;
+    const { page, take, searchQuery, currentYear, quartetlyId } = req.query;
 
     const studentCurrentYear =
       currentYear === "" ? undefined : Number(currentYear);
@@ -107,7 +125,8 @@ export const reportByYearController = async (req: Request, res: Response) => {
       Number(page),
       Number(take),
       String(searchQuery),
-      studentCurrentYear
+      studentCurrentYear,
+      String(quartetlyId)
     );
 
     const workBook = new excel.Workbook();

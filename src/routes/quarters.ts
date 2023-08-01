@@ -4,6 +4,7 @@ import {
   getQuartersController,
   postQuarterController,
   getQuartersListController,
+  getStudentQuarterController,
 } from "../controllers/quarters";
 
 const router = express.Router();
@@ -11,7 +12,7 @@ const router = express.Router();
 //get payments
 router.get("/", getQuartersController);
 router.get("/list", getQuartersListController);
-// router.get("/student/:id", getStudentTypesController);
+router.get("/student/:id", getStudentQuarterController);
 // router.get("/student/:id", getStudentByIdController);
 
 //post payments
