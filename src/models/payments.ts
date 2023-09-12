@@ -90,6 +90,7 @@ export const getPaymentById = async (id: string) => {
         select: {
           studentId: true,
           studentFullName: true,
+          studentEmail: true,
         },
       },
     },

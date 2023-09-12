@@ -13,8 +13,8 @@ import {
 import { findUserById } from "./user";
 import { generateTokens } from "../helpers/jwt";
 import { hash } from "../helpers/hashing";
-import { getStudentByEmail } from "../models/students";
-import { getUserByEmail } from "../models/user";
+import { getStudentByDNI } from "../models/students";
+import { getUserByEmail, getUserByStudentId } from "../models/user";
 import userRole from "../constants/userRole";
 
 export const signUpController = async (
@@ -23,18 +23,28 @@ export const signUpController = async (
   next: NextFunction
 ) => {
   try {
-    const { userEmail, password, userName } = req.body;
+    const { userDNI, password, userEmail } = req.body;
+
+    const student = await getStudentByDNI(userDNI);
+
+    if (!student.studentId)
+      return res.status(400).json({ message: "Estudiante no encontrado" });
+
+    const findUser = await getUserByStudentId(student.studentId || "");
+
+    if (findUser)
+      return res
+        .status(400)
+        .json({ message: "El estudiante ya tiene una cuenta" });
 
     const hashedPassword = bcrypt.hashSync(password, 12);
 
-    const { studentId } = await getStudentByEmail(userEmail);
-
     const data: User = {
       userId: uuid(),
-      userName,
+      userName: student.studentFullName || "",
       userEmail,
       roleId: userRole.STUDENT,
-      studentId: studentId || null,
+      studentId: student.studentId || "",
       userPassword: hashedPassword,
     };
 

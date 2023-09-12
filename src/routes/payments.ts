@@ -4,6 +4,7 @@ import {
   getPaymentsController,
   getPaymentByIdController,
   postPaymentController,
+  postPaymentMail,
 } from "../controllers/payments";
 
 const router = express.Router();
@@ -15,6 +16,6 @@ router.get("/:id", getPaymentByIdController);
 
 //post payments
 router.post("/", postPaymentController);
-// router.post("/types", postStudentTypesController);
+router.post("/payment-mail/:id", postPaymentMail);
 
 export default router;
