@@ -56,8 +56,8 @@ export const getDashboardController = async (req: Request, res: Response) => {
 
     res.json({
       totalStudents,
-      totalPayments: _sum.paymentAmount,
-      totalOwed: _sum_owed.collectionStudentAmountOwed,
+      totalPayments: _sum.paymentAmount || 0,
+      totalOwed: _sum_owed.collectionStudentAmountOwed || 0,
       studentsLastYear,
       tableWithStudentName,
       chartData,
