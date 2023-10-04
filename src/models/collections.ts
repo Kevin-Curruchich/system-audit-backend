@@ -1,5 +1,5 @@
 import prisma from "../utils/db";
-import { Collection, CollectionStudent } from "@prisma/client";
+import { Collection, CollectionStudent, Quartetly } from "@prisma/client";
 
 //get methods
 export const getCollectionTypes = async () => {
@@ -75,7 +75,21 @@ export const getCollectionStudent = async (
           children: [],
         };
       }
-      acc[studentId].children.push(collectionStudent);
+
+      const collectionStudentData = {
+        collectionStudentId: collectionStudent.collectionStudentId,
+        collectionId: collectionStudent.collectionId,
+        collectionStudentAmountOwed:
+          collectionStudent.collectionStudentAmountOwed,
+        collectionStudentAmountPaid:
+          collectionStudent.collectionStudentAmountPaid,
+        collectionStudentDate: collectionStudent.collectionStudentDate,
+        collection: collectionStudent.collection,
+        Quartetly: collectionStudent.Quartetly,
+        quartetlyQuartetlyId: collectionStudent.quartetlyQuartetlyId,
+      };
+
+      acc[studentId].children.push(collectionStudentData);
       return acc;
     },
     {} as Record<string, any>
@@ -88,6 +102,80 @@ export const getCollectionStudent = async (
   const total = collectionStudentByStudent.length;
 
   return { data: collectionStudentByStudent, total };
+};
+
+export const getCollectionStudentWithoutPage = async (
+  searchQuery: string,
+  currentYear: any,
+  quartetlyId: string
+) => {
+  const collectionStudent = await prisma.collectionStudent.findMany({
+    include: {
+      collection: {
+        select: {
+          collectionId: true,
+          collectionName: true,
+        },
+      },
+      Quartetly: {
+        select: {
+          quartetlyId: true,
+          quartetlyName: true,
+        },
+      },
+      student: {
+        select: {
+          studentId: true,
+          studentFullName: true,
+          studentCurrentYear: true,
+        },
+      },
+    },
+    where: {
+      student: {
+        studentFullName: {
+          contains: searchQuery,
+          mode: "insensitive",
+        },
+        studentCurrentYear: {
+          equals: currentYear,
+        },
+      },
+      Quartetly: {
+        quartetlyId: {
+          contains: quartetlyId,
+        },
+      },
+    },
+    orderBy: {
+      collectionStudentAmountOwed: "desc",
+    },
+  });
+
+  const collectionStudentByStudentGroupedByStudent = collectionStudent.reduce(
+    (acc, collectionStudent) => {
+      const { studentId } = collectionStudent.student;
+      if (!acc[studentId]) {
+        acc[studentId] = {
+          studentId,
+          studentFullName: collectionStudent.student.studentFullName,
+          studentCurrentYear: collectionStudent.student.studentCurrentYear,
+          children: [],
+        };
+      }
+      acc[studentId].children.push(collectionStudent);
+      return acc;
+    },
+    {} as Record<string, any>
+  );
+
+  const collectionStudentByStudent = Object.values(
+    collectionStudentByStudentGroupedByStudent
+  );
+
+  const total = collectionStudentByStudent.length;
+
+  return collectionStudentByStudent;
 };
 
 export const getCollectionsByStudent = async (studentIdToSearch: string) => {
@@ -146,6 +234,7 @@ export const getCollectionsHistoryByStudent = async (
       },
       collectionStudentAmountOwed: true,
       collectionStudentAmountPaid: true,
+      collectionStudentDate: true,
       Payment: true,
       Quartetly: {
         select: {

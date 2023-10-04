@@ -1,5 +1,5 @@
 import prisma from "../utils/db";
-import { CollectionStudent, Payment } from "@prisma/client";
+import { CollectionStudent, Payment, Quartetly } from "@prisma/client";
 
 //get methods
 export const getPayments = async (
@@ -15,8 +15,8 @@ export const getPayments = async (
       collectionStudent: {
         select: {
           collectionStudentId: true,
-          collectionStudentAmountOwed: true,
-          collectionStudentAmountPaid: true,
+          collectionStudentAmountOwed: false,
+          collectionStudentAmountPaid: false,
           collection: {
             select: {
               collectionId: true,
@@ -63,9 +63,20 @@ export const getPayments = async (
         children: [],
       };
     }
-    acc[studentId].children.push(payment);
+
+    const paymentData = {
+      paymentId: payment.paymentId,
+      paymentDate: payment.paymentDate,
+      paymentAmount: payment.paymentAmount,
+      Quartetly: payment.collectionStudent.Quartetly,
+      collectionStudent: payment.collectionStudent,
+    };
+
+    acc[studentId].children.push(paymentData);
+
     return acc;
   }, {} as Record<string, any>);
+
   const paymentsByStudent = Object.values(paymentsByStudentGroupedByStudent);
 
   const total = paymentsByStudent.length;

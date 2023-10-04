@@ -58,9 +58,9 @@ export const postPaymentController = async (req: Request, res: Response) => {
       paymentSlip,
     };
 
-    const collection = await postPayment(data);
+    const payment = await postPayment(data);
 
-    res.json(collection);
+    res.json(payment);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -77,7 +77,7 @@ export const postPaymentMail = async (req: Request, res: Response) => {
 
     transporter.sendMail({
       from: '"Seminario Biblico Guatemalteco" <admin@sbg.org>',
-      to: [payment.student.studentEmail, "kevincx123@gmail.com"],
+      to: [payment.student.studentEmail, "kevincxdev@gmail.com"],
       subject: "SBG - Aporte realizado",
       html: `
       <div

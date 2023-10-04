@@ -121,7 +121,6 @@ export const postStudentController = async (req: Request, res: Response) => {
     res.status(201).json(response);
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError) {
-      console.log({ mes: "catch", err });
       return res.status(404).json({ status: "error", message: err.message });
     }
     res.status(500).json({ message: "Internal Server Error", err });
