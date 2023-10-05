@@ -76,8 +76,8 @@ export const postPaymentMail = async (req: Request, res: Response) => {
     if (!payment) throw new Error("Payment not found");
 
     transporter.sendMail({
-      from: '"Seminario Biblico Guatemalteco" <admin@sbg.org>',
-      to: [payment.student.studentEmail, "kevincxdev@gmail.com"],
+      from: '"Seminario Biblico Guatemalteco" <contabilidad.seminariobiblico@gmail.com>',
+      to: [payment.student.studentEmail],
       subject: "SBG - Aporte realizado",
       html: `
       <div
