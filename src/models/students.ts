@@ -1,3 +1,4 @@
+import { UpdateStudentInput } from "../interfaces/student";
 import prisma from "../utils/db";
 
 import { Student, StudentStatus, StudentType } from "@prisma/client";
@@ -13,6 +14,7 @@ export const getStudents = async (
   const students = await prisma.student.findMany({
     skip: (page - 1) * take,
     take,
+    orderBy: { studentFullName: "asc" },
     where: {
       studentFullName: {
         contains: searchQuery,
@@ -91,3 +93,15 @@ export const postStudentTypes = async (studentTypeData: StudentType) => {
 
   return studentType;
 };
+
+// export const putStudent = async (
+//   id: string,
+//   studentData: UpdateStudentInput
+// ) => {
+//   const student = await prisma.student.update({
+//     where: { studentId: id },
+//     data: studentData,
+//   });
+
+//   return student;
+// };

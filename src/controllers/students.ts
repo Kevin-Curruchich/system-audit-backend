@@ -9,8 +9,11 @@ import {
   postStudentTypes,
   postStudent,
   getStudentsList,
+  // putStudent,
 } from "../models/students";
 import studentStatus from "../constants/studentStatus";
+import { Student } from "@prisma/client";
+import { UpdateStudentInput } from "../interfaces/student";
 
 //get methods
 export const getStudentsController = async (req: Request, res: Response) => {
@@ -95,6 +98,8 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentStartDate,
       studentTypeId,
       studentCurrentYear,
+      studentAddress,
+      studentBirthDate,
     } = req.body;
 
     const data = {
@@ -108,11 +113,11 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
       createdAt: new Date(moment(new Date()).format("YYYY-MM-DD")),
       studentCurrentYear: studentCurrentYear,
-      studentAddress: "",
+      studentAddress: studentAddress,
       studentCountry: "",
       studentCity: "",
       studentProvince: "",
-      studentBirthDate: new Date(moment(new Date()).format("YYYY-MM-DD")),
+      studentBirthDate: new Date(moment(studentBirthDate).format("YYYY-MM-DD")),
       studentTypeId,
       studentStatusId: studentStatus.ACTIVE,
     };
@@ -145,3 +150,45 @@ export const postStudentTypesController = async (
     res.status(500).json({ message: "Internal Server Error", err });
   }
 };
+
+// export const putStudentController = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       studentName,
+//       studentLastName,
+//       studentDni,
+//       studentPhone,
+//       studentEmail,
+//       studentStartDate,
+//       studentTypeId,
+//       studentCurrentYear,
+//       studentAddress,
+//       studentBirthDate,
+//     } = req.body;
+
+//     const data: UpdateStudentInput = {
+//       studentName: studentName.toUpperCase(),
+//       studentLastName: studentLastName.toUpperCase(),
+//       studentFullName: `${studentName.toUpperCase()} ${studentLastName.toUpperCase()}`,
+//       studentDni,
+//       studentPhone,
+//       studentEmail,
+//       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
+//       studentCurrentYear: studentCurrentYear,
+//       studentAddress: studentAddress,
+//       studentCountry: "",
+//       studentCity: "",
+//       studentProvince: "",
+//       studentBirthDate: new Date(moment(studentBirthDate).format("YYYY-MM-DD")),
+//       studentTypeId,
+//     };
+
+//     const student = putStudent(String(id), data);
+
+//     res.status(201).json(student);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ message: "Internal Server Error", err });
+//   }
+// };

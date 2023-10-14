@@ -7,6 +7,7 @@ import {
   getStudentTypesController,
   postStudentTypesController,
   postStudentController,
+  // putStudentController,
 } from "../controllers/students";
 
 const router = express.Router();
@@ -20,5 +21,8 @@ router.get("/student/:id", getStudentByIdController);
 //post students
 router.post("/", postStudentController);
 router.post("/types", postStudentTypesController);
+
+//put students
+// router.put("/:id", putStudentController);
 
 export default router;
