@@ -33,28 +33,23 @@ export const getStudents = async (
     include: { StudentType: true, StudentStatus: true },
   });
 
-  let total = 0;
-  if (searchQuery || studentTypeId || studentStatusId || currentYear) {
-    total = await prisma.student.count({
-      where: {
-        studentFullName: {
-          contains: searchQuery,
-          mode: "insensitive",
-        },
-        studentTypeId: {
-          contains: studentTypeId,
-        },
-        studentStatusId: {
-          contains: studentStatusId,
-        },
-        studentCurrentYear: {
-          equals: currentYear,
-        },
+  const total = await prisma.student.count({
+    where: {
+      studentFullName: {
+        contains: searchQuery,
+        mode: "insensitive",
       },
-    });
-  } else {
-    total = await prisma.student.count();
-  }
+      studentTypeId: {
+        contains: studentTypeId,
+      },
+      studentStatusId: {
+        contains: studentStatusId,
+      },
+      studentCurrentYear: {
+        equals: currentYear,
+      },
+    },
+  });
 
   return { data: students, total };
 };
