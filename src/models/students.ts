@@ -34,7 +34,7 @@ export const getStudents = async (
   });
 
   let total = 0;
-  if (searchQuery) {
+  if (searchQuery || studentTypeId || studentStatusId || currentYear) {
     total = students.length;
   } else {
     total = await prisma.student.count();
