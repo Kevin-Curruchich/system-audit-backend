@@ -52,15 +52,15 @@ export const reportByStudentController = async (
     resumenSheet.columns = [
       { header: "Nombre", key: "name", width: 20 },
       { header: "Apellido", key: "lastName", width: 20 },
-      { header: "Total Saldo", key: "totalOwed", width: 20 },
       { header: "Total Abonado", key: "totalPaid", width: 20 },
+      { header: "Total Saldo", key: "totalOwed", width: 20 },
     ];
 
     resumenSheet.addRow({
       name: studentData.studentName,
       lastName: studentData.studentLastName,
-      totalOwed,
       totalPaid,
+      totalOwed,
     });
 
     for (const collectionItem of newCollections) {
@@ -91,41 +91,45 @@ export const reportByStudentController = async (
       sheet.getCell("A1").font = { bold: true };
       sheet.getCell("B1").value = `${collectionName}`;
 
-      sheet.getCell("A2").value = "Trimestre";
+      sheet.getCell("A2").value = "Descripcion";
       sheet.getCell("A2").font = { bold: true };
-      sheet.getCell("B2").value = collectionItem.Quartetly?.quartetlyName;
+      sheet.getCell("B2").value = collectionItem.collection?.collectionDesc;
 
-      sheet.getCell("A3").value = "Fecha";
+      sheet.getCell("A3").value = "Trimestre";
       sheet.getCell("A3").font = { bold: true };
-      sheet.getCell("B3").value = collectionFullDate;
+      sheet.getCell("B3").value = collectionItem.Quartetly?.quartetlyName;
 
-      sheet.getCell("A4").value = "Total";
-      sheet.getCell("B4").value = "Abonado";
-      sheet.getCell("C4").value = "Saldo";
-
+      sheet.getCell("A4").value = "Fecha";
       sheet.getCell("A4").font = { bold: true };
-      sheet.getCell("B4").font = { bold: true };
-      sheet.getCell("C4").font = { bold: true };
+      sheet.getCell("B4").value = collectionFullDate;
 
-      sheet.getCell("A5").value =
+      sheet.getCell("A5").value = "Cobro";
+      sheet.getCell("B5").value = "Abonado";
+      sheet.getCell("C5").value = "Saldo";
+
+      sheet.getCell("A5").font = { bold: true };
+      sheet.getCell("B5").font = { bold: true };
+      sheet.getCell("C5").font = { bold: true };
+
+      sheet.getCell("A6").value =
         collectionItem.collectionStudentAmountOwed +
         collectionItem.collectionStudentAmountPaid;
-      sheet.getCell("B5").value = collectionItem.collectionStudentAmountPaid;
-      sheet.getCell("C5").value = collectionItem.collectionStudentAmountOwed;
+      sheet.getCell("B6").value = collectionItem.collectionStudentAmountPaid;
+      sheet.getCell("C6").value = collectionItem.collectionStudentAmountOwed;
 
-      sheet.getCell("A5").numFmt = "Q0.00";
-      sheet.getCell("B5").numFmt = "Q0.00";
-      sheet.getCell("C5").numFmt = "Q0.00";
+      sheet.getCell("A6").numFmt = "Q0.00";
+      sheet.getCell("B6").numFmt = "Q0.00";
+      sheet.getCell("C6").numFmt = "Q0.00";
 
-      sheet.getCell("A7").value = "Pagos";
-      sheet.getCell("A7").font = { bold: true };
+      sheet.getCell("A8").value = "Pagos";
+      sheet.getCell("A8").font = { bold: true };
 
-      sheet.getCell("A9").value = "Fecha";
-      sheet.getCell("B9").value = "Aporte";
-      sheet.getCell("C9").value = "Recibo";
-      sheet.getCell("D9").value = "Descripcion";
+      sheet.getCell("A10").value = "Fecha";
+      sheet.getCell("B10").value = "Aporte";
+      sheet.getCell("C10").value = "Recibo";
+      sheet.getCell("D10").value = "Descripcion";
 
-      let rowIndex = 10;
+      let rowIndex = 11;
       for (const payment of collectionItem.Payment) {
         sheet.getCell(`A${rowIndex}`).value = payment.paymentDate;
         sheet.getCell(`B${rowIndex}`).value = payment.paymentAmount;
@@ -138,7 +142,7 @@ export const reportByStudentController = async (
       //when finish with payments set a formula to calculate the total on the last row of the sheet and set the format to currency
       sheet.getCell(`A${rowIndex}`).value = "Total";
       sheet.getCell(`B${rowIndex}`).value = {
-        formula: `SUM(B6:B${rowIndex - 1})`,
+        formula: `SUM(B11:B${rowIndex - 1})`,
         date1904: false,
       };
       sheet.getCell(`B${rowIndex}`).numFmt = "Q0.00";

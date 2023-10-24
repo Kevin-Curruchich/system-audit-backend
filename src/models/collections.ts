@@ -198,6 +198,7 @@ export const getCollectionsOwedByStudent = async (
         select: {
           collectionId: true,
           collectionName: true,
+          collectionDesc: true,
         },
       },
       Quartetly: {
@@ -230,6 +231,7 @@ export const getCollectionsHistoryByStudent = async (
         select: {
           collectionId: true,
           collectionName: true,
+          collectionDesc: true,
         },
       },
       collectionStudentAmountOwed: true,
