@@ -79,7 +79,19 @@ export const getPayments = async (
 
   const paymentsByStudent = Object.values(paymentsByStudentGroupedByStudent);
 
-  const total = paymentsByStudent.length;
+  const total = await prisma.payment.count({
+    where: {
+      student: {
+        studentFullName: {
+          contains: searchQuery,
+          mode: "insensitive",
+        },
+        studentCurrentYear: {
+          equals: currentYear,
+        },
+      },
+    },
+  });
 
   return { data: paymentsByStudent, total };
 };
@@ -123,7 +135,9 @@ export const postPayment = async (paymentData: Payment) => {
     collectionStudentAmountPaid: oldAmountPaid,
   } = collToUpdate;
 
-  if (oldAmountOwed < paymentData.paymentAmount)
+  const oldAmountFixed = parseFloat(oldAmountOwed.toFixed(2));
+
+  if (oldAmountFixed < paymentData.paymentAmount)
     throw new Error("Payment amount exceeds amount owed");
 
   const updateCollection = prisma.collectionStudent.update({

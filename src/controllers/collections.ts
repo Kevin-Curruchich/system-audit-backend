@@ -90,8 +90,18 @@ export const getCollectionsOwedByIdController = async (
 
   try {
     const collections = await getCollectionsOwedByStudent(studentIdToSearch);
+    const collectionWithTwoDecimals = collections.map((collection) => {
+      const newCollection = {
+        ...collection,
+        collectionStudentAmountOwed: Number(
+          collection.collectionStudentAmountOwed.toFixed(2)
+        ),
+      };
 
-    res.json(collections);
+      return newCollection;
+    });
+
+    res.json(collectionWithTwoDecimals);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
