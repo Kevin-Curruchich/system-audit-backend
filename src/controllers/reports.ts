@@ -4,7 +4,7 @@ import {
   getCollectionStudentWithoutPage,
   getCollectionsHistoryByStudent,
 } from "../models/collections";
-import { getStudent } from "../models/students";
+import { getStudent, getStudentsWithAllStudnetData } from "../models/students";
 import moment from "moment";
 
 export const reportByStudentController = async (
@@ -272,6 +272,105 @@ export const reportByYearController = async (req: Request, res: Response) => {
       "attachment; filename=" + "Reporte" + ".xlsx"
     );
 
+    workBook.xlsx.write(res).then(function () {
+      res.status(200).end();
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//create a controlet to get the report of all students with only his information, no payments and no collections
+export const reportAllStudentsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const students = await getStudentsWithAllStudnetData();
+    const workBook = new excel.Workbook();
+    const studentsSheet = workBook.addWorksheet("Estudiantes");
+    studentsSheet.columns = [
+      {
+        header: "Apellido",
+        key: "studentLastName",
+        width: 20,
+      },
+      {
+        header: "Nombre",
+        key: "studentName",
+        width: 20,
+      },
+      {
+        header: "DPI",
+        key: "studentDni",
+        width: 30,
+      },
+      {
+        header: "Telefono",
+        key: "studentPhone",
+        width: 30,
+      },
+      {
+        header: "Email",
+        key: "studentEmail",
+        width: 30,
+      },
+      {
+        header: "Fecha nacimiento ",
+        key: "studentBirthDate",
+        width: 30,
+      },
+      {
+        header: "Tipo",
+        key: "StudentType",
+        width: 20,
+      },
+      {
+        header: "Estado",
+        key: "StudentStatus",
+        width: 20,
+      },
+      {
+        header: "Año",
+        key: "studentCurrentYear",
+        width: 20,
+      },
+    ];
+
+    studentsSheet.getCell("A1").style = { font: { bold: true } };
+    studentsSheet.getCell("B1").style = { font: { bold: true } };
+    studentsSheet.getCell("C1").style = { font: { bold: true } };
+    studentsSheet.getCell("D1").style = { font: { bold: true } };
+    studentsSheet.getCell("E1").style = { font: { bold: true } };
+    studentsSheet.getCell("F1").style = { font: { bold: true } };
+    studentsSheet.getCell("G1").style = { font: { bold: true } };
+    studentsSheet.getCell("H1").style = { font: { bold: true } };
+    studentsSheet.getCell("I1").style = { font: { bold: true } };
+    studentsSheet.getCell("J1").style = { font: { bold: true } };
+
+    students.forEach((element, index) => {
+      studentsSheet.addRow({
+        studentLastName: element.studentLastName,
+        studentName: element.studentName,
+        studentDni: element.studentDni,
+        studentPhone: element.studentPhone,
+        studentEmail: element.studentEmail,
+        studentBirthDate: moment(element.studentBirthDate).format("DD/MM/YYYY"),
+        StudentType: element.StudentType.studentTypeName,
+        StudentStatus: element.StudentStatus.studentStatusName,
+        studentCurrentYear: element.studentCurrentYear,
+      });
+    });
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + "Reporte" + ".xlsx"
+    );
     workBook.xlsx.write(res).then(function () {
       res.status(200).end();
     });
