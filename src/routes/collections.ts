@@ -9,6 +9,7 @@ import {
   postCollectionController,
   postCollectionStudentController,
   getCollectionsStudentByIdController,
+  putCollectionAmountOwedController,
 } from "../controllers/collections";
 
 const router = express.Router();
@@ -24,5 +25,7 @@ router.get("/students/:id/history", getCollectionsStudentByIdController);
 //post collections
 router.post("/", postCollectionController);
 router.post("/student", postCollectionStudentController);
+
+router.put("/students/:id", putCollectionAmountOwedController);
 
 export default router;

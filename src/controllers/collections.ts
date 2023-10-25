@@ -10,6 +10,8 @@ import {
   getCollectionsHistoryByStudent,
   postCollection,
   postCollectionStudent,
+  putCollectionAmountOwed,
+  getColelctionStudentById,
 } from "../models/collections";
 
 //get controllers
@@ -207,6 +209,46 @@ export const postCollectionStudentController = async (
     const collectionStudent = await postCollectionStudent(data);
 
     res.json(collectionStudent);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", error });
+  }
+};
+
+export const putCollectionAmountOwedController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const { amountOwed } = req.body;
+
+    const collectionStudentId = String(id);
+    const newCollectionOwed = Number(amountOwed);
+
+    const collection = await getColelctionStudentById(collectionStudentId);
+
+    if (!collection) {
+      res.status(404).json({ message: "Cobro no encontrado" });
+      return;
+    }
+
+    if (newCollectionOwed < collection.collectionStudentAmountPaid) {
+      res
+        .status(400)
+        .json({ message: "El monto no puede ser menor al monto aportado" });
+      return;
+    }
+
+    const correctAmountOwed =
+      newCollectionOwed - collection.collectionStudentAmountPaid;
+
+    const collectionUpdated = await putCollectionAmountOwed(
+      collectionStudentId,
+      correctAmountOwed
+    );
+
+    res.json(collectionUpdated);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error", error });

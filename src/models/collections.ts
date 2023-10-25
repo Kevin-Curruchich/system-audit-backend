@@ -79,6 +79,7 @@ export const getCollectionStudent = async (
       const collectionStudentData = {
         collectionStudentId: collectionStudent.collectionStudentId,
         collectionId: collectionStudent.collectionId,
+        childrenStudentId: collectionStudent.studentId,
         collectionStudentAmountOwed:
           collectionStudent.collectionStudentAmountOwed,
         collectionStudentAmountPaid:
@@ -259,6 +260,16 @@ export const getCollectionsHistoryByStudent = async (
   return collections;
 };
 
+export const getColelctionStudentById = async (collectionStudentId: string) => {
+  const collectionStudent = await prisma.collectionStudent.findUnique({
+    where: {
+      collectionStudentId,
+    },
+  });
+
+  return collectionStudent;
+};
+
 //post collections
 export const postCollection = async (collectionData: Collection) => {
   const collection = await prisma.collection.create({
@@ -273,6 +284,23 @@ export const postCollectionStudent = async (
 ) => {
   const collectionStudent = await prisma.collectionStudent.create({
     data: collectionStudentData,
+  });
+
+  return collectionStudent;
+};
+
+//put
+export const putCollectionAmountOwed = async (
+  collectionStudentId: string,
+  collectionStudentAmountOwed: number
+) => {
+  const collectionStudent = await prisma.collectionStudent.update({
+    where: {
+      collectionStudentId,
+    },
+    data: {
+      collectionStudentAmountOwed,
+    },
   });
 
   return collectionStudent;
