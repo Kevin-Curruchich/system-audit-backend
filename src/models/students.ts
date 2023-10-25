@@ -67,6 +67,15 @@ export const getStudentsList = async () => {
   return { data, total };
 };
 
+export const getStudentsWithAllStudnetData = async () => {
+  const data = await prisma.student.findMany({
+    include: { StudentType: true, StudentStatus: true },
+    orderBy: [{ studentCurrentYear: "asc" }, { studentLastName: "asc" }],
+  });
+
+  return data;
+};
+
 export const getStudent = async (id: string) => {
   const studentData = await prisma.student.findUnique({
     where: { studentId: id },
