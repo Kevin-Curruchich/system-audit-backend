@@ -1,7 +1,6 @@
-import { UpdateStudentInput } from "../interfaces/student";
 import prisma from "../utils/db";
-
 import { Student, StudentStatus, StudentType } from "@prisma/client";
+import { PutStudentDto } from "../controllers/dto/students/put.student.dto";
 
 export const getStudents = async (
   page: number,
@@ -114,14 +113,11 @@ export const postStudentTypes = async (studentTypeData: StudentType) => {
   return studentType;
 };
 
-// export const putStudent = async (
-//   id: string,
-//   studentData: UpdateStudentInput
-// ) => {
-//   const student = await prisma.student.update({
-//     where: { studentId: id },
-//     data: studentData,
-//   });
+export const putStudent = async (id: string, studentData: PutStudentDto) => {
+  const student = await prisma.student.update({
+    where: { studentId: id },
+    data: studentData,
+  });
 
-//   return student;
-// };
+  return student;
+};

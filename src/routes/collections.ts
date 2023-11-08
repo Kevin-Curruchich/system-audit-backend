@@ -1,5 +1,6 @@
 // routes\collections.ts
 import express from "express";
+import { validateIdParam } from "../middlewares/validate-id-param.interface";
 import {
   getCollectionTypesController,
   getCollectionsController,
@@ -18,14 +19,22 @@ const router = express.Router();
 router.get("/", getCollectionsController);
 router.get("/types", getCollectionTypesController);
 router.get("/students", getCollectionStudentController);
-router.get("/students/:id", getCollectionsByIdController);
-router.get("/students/:id/owed", getCollectionsOwedByIdController);
-router.get("/students/:id/history", getCollectionsStudentByIdController);
+router.get("/students/:id", validateIdParam, getCollectionsByIdController);
+router.get(
+  "/students/:id/owed",
+  validateIdParam,
+  getCollectionsOwedByIdController
+);
+router.get(
+  "/students/:id/history",
+  validateIdParam,
+  getCollectionsStudentByIdController
+);
 
 //post collections
 router.post("/", postCollectionController);
 router.post("/student", postCollectionStudentController);
 
-router.put("/students/:id", putCollectionAmountOwedController);
+router.put("/students/:id", validateIdParam, putCollectionAmountOwedController);
 
 export default router;

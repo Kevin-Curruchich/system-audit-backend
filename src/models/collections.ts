@@ -1,5 +1,6 @@
 import prisma from "../utils/db";
-import { Collection, CollectionStudent, Quartetly } from "@prisma/client";
+import { Collection, CollectionStudent } from "@prisma/client";
+import { PutCollectionStudentDto } from "../controllers/dto/collections/put.collection-student.dto";
 
 //get methods
 export const getCollectionTypes = async () => {
@@ -238,6 +239,7 @@ export const getCollectionsHistoryByStudent = async (
       collectionStudentAmountOwed: true,
       collectionStudentAmountPaid: true,
       collectionStudentDate: true,
+      collectionDescription: true,
       Payment: true,
       Quartetly: {
         select: {
@@ -292,15 +294,13 @@ export const postCollectionStudent = async (
 //put
 export const putCollectionAmountOwed = async (
   collectionStudentId: string,
-  collectionStudentAmountOwed: number
+  data: PutCollectionStudentDto
 ) => {
   const collectionStudent = await prisma.collectionStudent.update({
     where: {
       collectionStudentId,
     },
-    data: {
-      collectionStudentAmountOwed,
-    },
+    data,
   });
 
   return collectionStudent;

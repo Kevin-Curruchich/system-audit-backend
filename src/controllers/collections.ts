@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import moment from "moment";
 import { v4 as uuid } from "uuid";
+import moment from "moment";
 import {
   getCollectionTypes,
   getCollections,
@@ -13,6 +13,7 @@ import {
   putCollectionAmountOwed,
   getColelctionStudentById,
 } from "../models/collections";
+import { PutCollectionStudentDto } from "./dto/collections/put.collection-student.dto";
 
 //get controllers
 export const getCollectionTypesController = async (
@@ -216,15 +217,16 @@ export const postCollectionStudentController = async (
 };
 
 export const putCollectionAmountOwedController = async (
-  req: Request,
+  req: Request<{ id: string }, {}, PutCollectionStudentDto>,
   res: Response
 ) => {
   try {
-    const { id } = req.params;
-    const { amountOwed } = req.body;
+    const payload = req.body;
+    const { id: collectionStudentId } = req.params;
+    const { collectionStudentAmountOwed: newCollectionOwed } = payload;
 
-    const collectionStudentId = String(id);
-    const newCollectionOwed = Number(amountOwed);
+    // const  = id;
+    // const newCollectionOwed = collectionStudentAmountOwed
 
     const collection = await getColelctionStudentById(collectionStudentId);
 
@@ -243,9 +245,15 @@ export const putCollectionAmountOwedController = async (
     const correctAmountOwed =
       newCollectionOwed - collection.collectionStudentAmountPaid;
 
+    const data: PutCollectionStudentDto = {
+      collectionStudentAmountOwed: correctAmountOwed,
+      collectionStudentUpdateDate: payload.collectionStudentUpdateDate,
+      collectionDescription: payload.collectionDescription,
+    };
+
     const collectionUpdated = await putCollectionAmountOwed(
       collectionStudentId,
-      correctAmountOwed
+      data
     );
 
     res.json(collectionUpdated);

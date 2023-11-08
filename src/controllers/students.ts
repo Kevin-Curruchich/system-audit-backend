@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { v4 as uuid } from "uuid";
 import moment from "moment";
+import { Student } from "@prisma/client";
 import {
   getStudents,
   getStudent,
@@ -9,11 +10,11 @@ import {
   postStudentTypes,
   postStudent,
   getStudentsList,
-  // putStudent,
+  putStudent,
 } from "../models/students";
+import { CreateStudentDto } from "./dto/students/create.student.dto";
+import { PutStudentDto } from "./dto/students/put.student.dto";
 import studentStatus from "../constants/studentStatus";
-import { Student } from "@prisma/client";
-import { UpdateStudentInput } from "../interfaces/student";
 
 //get methods
 export const getStudentsController = async (req: Request, res: Response) => {
@@ -61,12 +62,29 @@ export const getStudentsListController = async (
   }
 };
 
-export const getStudentByIdController = async (req: Request, res: Response) => {
+export const getStudentByIdController = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   try {
     const { id } = req.params;
-    const student = await getStudent(String(id));
+    const student = await getStudent(id);
 
-    res.json(student);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const data = {
+      ...student,
+      studentStartDate: moment(student.studentStartDate)
+        .utc()
+        .format("YYYY-MM-DD"),
+      studentBirthDate: moment(student.studentBirthDate)
+        .utc()
+        .format("YYYY-MM-DD"),
+    };
+
+    res.json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -87,7 +105,10 @@ export const getStudentTypesController = async (
 };
 
 //post mothds
-export const postStudentController = async (req: Request, res: Response) => {
+export const postStudentController = async (
+  req: Request<{}, {}, CreateStudentDto>,
+  res: Response
+) => {
   try {
     const {
       studentName,
@@ -102,7 +123,7 @@ export const postStudentController = async (req: Request, res: Response) => {
       studentBirthDate,
     } = req.body;
 
-    const data = {
+    const data: Student = {
       studentId: uuid(),
       studentName: studentName.toUpperCase(),
       studentLastName: studentLastName.toUpperCase(),
@@ -128,6 +149,7 @@ export const postStudentController = async (req: Request, res: Response) => {
     if (err instanceof PrismaClientKnownRequestError) {
       return res.status(404).json({ status: "error", message: err.message });
     }
+
     res.status(500).json({ message: "Internal Server Error", err });
   }
 };
@@ -151,44 +173,29 @@ export const postStudentTypesController = async (
   }
 };
 
-// export const putStudentController = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params;
-//     const {
-//       studentName,
-//       studentLastName,
-//       studentDni,
-//       studentPhone,
-//       studentEmail,
-//       studentStartDate,
-//       studentTypeId,
-//       studentCurrentYear,
-//       studentAddress,
-//       studentBirthDate,
-//     } = req.body;
+export const putStudentController = async (
+  req: Request<{ id: string }, {}, PutStudentDto>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
 
-//     const data: UpdateStudentInput = {
-//       studentName: studentName.toUpperCase(),
-//       studentLastName: studentLastName.toUpperCase(),
-//       studentFullName: `${studentName.toUpperCase()} ${studentLastName.toUpperCase()}`,
-//       studentDni,
-//       studentPhone,
-//       studentEmail,
-//       studentStartDate: new Date(moment(studentStartDate).format("YYYY-MM-DD")),
-//       studentCurrentYear: studentCurrentYear,
-//       studentAddress: studentAddress,
-//       studentCountry: "",
-//       studentCity: "",
-//       studentProvince: "",
-//       studentBirthDate: new Date(moment(studentBirthDate).format("YYYY-MM-DD")),
-//       studentTypeId,
-//     };
+    const data = req.body;
+    data.studentName = data.studentName.toUpperCase();
+    data.studentLastName = data.studentLastName.toUpperCase();
+    data.studentFullName = `${data.studentName.toUpperCase()} ${data.studentLastName.toUpperCase()}`;
+    data.studentStartDate = new Date(
+      moment(data.studentStartDate).format("YYYY-MM-DD")
+    );
+    data.studentBirthDate = new Date(
+      moment(data.studentBirthDate).format("YYYY-MM-DD")
+    );
 
-//     const student = putStudent(String(id), data);
+    const student = await putStudent(id, data);
 
-//     res.status(201).json(student);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: "Internal Server Error", err });
-//   }
-// };
+    res.status(200).json(student);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal Server Error", err });
+  }
+};
