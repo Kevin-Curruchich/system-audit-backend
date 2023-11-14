@@ -11,6 +11,7 @@ import {
   postCollectionStudentController,
   getCollectionsStudentByIdController,
   putCollectionAmountOwedController,
+  putCollectionController,
 } from "../controllers/collections";
 
 const router = express.Router();
@@ -35,6 +36,8 @@ router.get(
 router.post("/", postCollectionController);
 router.post("/student", postCollectionStudentController);
 
+//put collections
+router.put("/:id", validateIdParam, putCollectionController);
 router.put("/students/:id", validateIdParam, putCollectionAmountOwedController);
 
 export default router;

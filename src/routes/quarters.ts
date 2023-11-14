@@ -1,10 +1,12 @@
 // routes/users.js
 import express from "express";
+import { validateIdParam } from "../middlewares/validate-id-param.interface";
 import {
   getQuartersController,
   postQuarterController,
   getQuartersListController,
   getStudentQuarterController,
+  putQuarterController,
 } from "../controllers/quarters";
 
 const router = express.Router();
@@ -17,6 +19,8 @@ router.get("/student/:id", getStudentQuarterController);
 
 //post payments
 router.post("/", postQuarterController);
-// router.post("/types", postStudentTypesController);
+
+//put
+router.put("/:id", validateIdParam, putQuarterController);
 
 export default router;

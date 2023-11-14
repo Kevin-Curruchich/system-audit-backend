@@ -1,6 +1,7 @@
 import prisma from "../utils/db";
 import { Collection, CollectionStudent } from "@prisma/client";
 import { PutCollectionStudentDto } from "../controllers/dto/collections/put.collection-student.dto";
+import { PutCollectionDto } from "../controllers/dto/collections/put.collection.dto";
 
 //get methods
 export const getCollectionTypes = async () => {
@@ -292,6 +293,20 @@ export const postCollectionStudent = async (
 };
 
 //put
+export const putCollection = async (
+  collectionId: string,
+  data: PutCollectionDto
+) => {
+  const collection = await prisma.collection.update({
+    where: {
+      collectionId,
+    },
+    data,
+  });
+
+  return collection;
+};
+
 export const putCollectionAmountOwed = async (
   collectionStudentId: string,
   data: PutCollectionStudentDto

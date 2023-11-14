@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { v4 as uuid } from "uuid";
 import moment from "moment";
+import { PutCollectionStudentDto } from "./dto/collections/put.collection-student.dto";
+import { PutCollectionDto } from "./dto/collections/put.collection.dto";
 import {
   getCollectionTypes,
   getCollections,
@@ -12,8 +14,8 @@ import {
   postCollectionStudent,
   putCollectionAmountOwed,
   getColelctionStudentById,
+  putCollection,
 } from "../models/collections";
-import { PutCollectionStudentDto } from "./dto/collections/put.collection-student.dto";
 
 //get controllers
 export const getCollectionTypesController = async (
@@ -216,6 +218,29 @@ export const postCollectionStudentController = async (
   }
 };
 
+//put controllers
+export const putCollectionController = async (
+  req: Request<{ id: string }, {}, PutCollectionDto>,
+  res: Response
+) => {
+  try {
+    const data = req.body;
+    const { id } = req.params;
+
+    const collection = await putCollection(id, data);
+
+    if (!collection) {
+      res.status(404).json({ message: "Cobro no encontrado" });
+      return;
+    }
+
+    res.json(collection);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", error });
+  }
+};
+
 export const putCollectionAmountOwedController = async (
   req: Request<{ id: string }, {}, PutCollectionStudentDto>,
   res: Response
@@ -224,9 +249,6 @@ export const putCollectionAmountOwedController = async (
     const payload = req.body;
     const { id: collectionStudentId } = req.params;
     const { collectionStudentAmountOwed: newCollectionOwed } = payload;
-
-    // const  = id;
-    // const newCollectionOwed = collectionStudentAmountOwed
 
     const collection = await getColelctionStudentById(collectionStudentId);
 

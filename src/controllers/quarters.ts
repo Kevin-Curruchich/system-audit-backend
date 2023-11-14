@@ -1,20 +1,44 @@
 import { Request, Response } from "express";
-import moment from "moment";
 import { v4 as uuid } from "uuid";
+import moment from "moment";
+import { Quartetly } from "@prisma/client";
+import { PutQuarterDto } from "./dto/collections/put.quarters.dto";
+import quartetlyStatus from "../constants/quartetlyStatus";
 import {
   getQuartets,
   getQuartetsList,
   getQuartetsListByStudentId,
   postQuartetly,
+  putQuarter,
 } from "../models/quarters";
-import quartetlyStatus from "../constants/quartetlyStatus";
 
 //get controllers
 export const getQuartersController = async (req: Request, res: Response) => {
   try {
     const { page, take } = req.query;
     const quarters = await getQuartets(Number(page), Number(take));
-    res.json(quarters);
+
+    if (!quarters) {
+      return res.status(404).json({ message: "Quarters not found" });
+    }
+
+    const data = {
+      data: quarters.data.map((quarter) => {
+        return {
+          quartetlyId: quarter.quartetlyId,
+          quartetlyName: quarter.quartetlyName,
+          quartetlyStart: moment(quarter.quartetlyStart)
+            .utc()
+            .format("YYYY-MM-DD"),
+          quartetlyEnd: moment(quarter.quartetlyEnd).utc().format("YYYY-MM-DD"),
+          quartetlyIsActive:
+            quarter.quartetlyStatusId === quartetlyStatus.ACTIVE,
+        };
+      }),
+      total: quarters.total,
+    };
+
+    res.json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -76,6 +100,44 @@ export const postQuarterController = async (req: Request, res: Response) => {
     };
 
     const quarter = await postQuartetly(data);
+
+    res.json(quarter);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//put controllers
+export const putQuarterController = async (
+  req: Request<{ id: string }, {}, PutQuarterDto>,
+  res: Response
+) => {
+  try {
+    const payload = req.body;
+    const { id } = req.params;
+
+    const data = {
+      ...payload,
+    };
+
+    data.quartetlyStatusId = data.quartetlyIsActive
+      ? quartetlyStatus.ACTIVE
+      : quartetlyStatus.INACTIVE;
+    data.quartetlyStart = new Date(
+      moment(data.quartetlyStart).format("YYYY-MM-DD")
+    );
+    data.quartetlyEnd = new Date(
+      moment(data.quartetlyEnd).format("YYYY-MM-DD")
+    );
+
+    delete data.quartetlyIsActive;
+
+    const quarter = await putQuarter(id, data);
+
+    if (!quarter) {
+      return res.status(404).json({ message: "Quarter not found" });
+    }
 
     res.json(quarter);
   } catch (error) {
