@@ -1,6 +1,6 @@
 // routes/users.js
 import express from "express";
-import { validateIdParam } from "../middlewares/validate-id-param.interface";
+import { validateIdParam } from "../middlewares/validate-id-param.middleware";
 import {
   getStudentsController,
   getStudentsListController,

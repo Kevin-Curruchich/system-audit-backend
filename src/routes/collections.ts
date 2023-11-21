@@ -1,6 +1,6 @@
 // routes\collections.ts
 import express from "express";
-import { validateIdParam } from "../middlewares/validate-id-param.interface";
+import { validateIdParam } from "../middlewares/validate-id-param.middleware";
 import {
   getCollectionTypesController,
   getCollectionsController,
@@ -13,13 +13,18 @@ import {
   putCollectionAmountOwedController,
   putCollectionController,
 } from "../controllers/collections";
+import { convertPaginationParamsToNumber } from "../middlewares/convert-pagination.middleware";
 
 const router = express.Router();
 
 //get collections
 router.get("/", getCollectionsController);
 router.get("/types", getCollectionTypesController);
-router.get("/students", getCollectionStudentController);
+router.get(
+  "/students",
+  convertPaginationParamsToNumber,
+  getCollectionStudentController
+);
 router.get("/students/:id", validateIdParam, getCollectionsByIdController);
 router.get(
   "/students/:id/owed",

@@ -9,7 +9,7 @@ import reports from "./routes/reports";
 import auth from "./routes/auth";
 import dashboard from "./routes/dashboard";
 import cors from "cors";
-import { isAuthenticated } from "./middlewares/authMiddleware";
+import { isAuthenticated } from "./middlewares/auth.middleware";
 
 const app = express();
 const port = process.env.PORT || 3000;

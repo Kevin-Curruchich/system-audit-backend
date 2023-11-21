@@ -16,6 +16,7 @@ import {
   getColelctionStudentById,
   putCollection,
 } from "../models/collections";
+import { GetColllectionStudentPaginationDto } from "./dto/collections/get.collection-students.dto";
 
 //get controllers
 export const getCollectionTypesController = async (
@@ -43,22 +44,19 @@ export const getCollectionsController = async (req: Request, res: Response) => {
 };
 
 export const getCollectionStudentController = async (
-  req: Request,
+  req: Request<{}, {}, {}, GetColllectionStudentPaginationDto>,
   res: Response
 ) => {
   try {
     const { page, take, searchQuery, currentYear, quartetlyId } = req.query;
 
-    const studentCurrentYear =
-      currentYear === "" ? undefined : Number(currentYear);
-
-    const collectionStudent = await getCollectionStudent(
-      Number(page),
-      Number(take),
-      String(searchQuery),
-      studentCurrentYear,
-      String(quartetlyId)
-    );
+    const collectionStudent = await getCollectionStudent({
+      page,
+      take,
+      searchQuery,
+      currentYear,
+      quartetlyId,
+    });
 
     res.json(collectionStudent);
   } catch (error) {

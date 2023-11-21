@@ -2,6 +2,7 @@ import prisma from "../utils/db";
 import { Collection, CollectionStudent } from "@prisma/client";
 import { PutCollectionStudentDto } from "../controllers/dto/collections/put.collection-student.dto";
 import { PutCollectionDto } from "../controllers/dto/collections/put.collection.dto";
+import { GetColllectionStudentPaginationDto } from "../controllers/dto/collections/get.collection-students.dto";
 
 //get methods
 export const getCollectionTypes = async () => {
@@ -16,13 +17,41 @@ export const getCollections = async () => {
   return collections;
 };
 
-export const getCollectionStudent = async (
-  page: number,
-  take: number,
-  searchQuery: string,
-  currentYear: any,
-  quartetlyId: string
-) => {
+export const getCollectionStudent = async ({
+  page,
+  take,
+  searchQuery,
+  currentYear,
+  quartetlyId,
+}: GetColllectionStudentPaginationDto) => {
+  const where: any = {};
+
+  if (searchQuery) {
+    where.student = {
+      studentFullName: {
+        contains: searchQuery,
+        mode: "insensitive",
+      },
+    };
+  }
+
+  if (currentYear) {
+    where.student = {
+      ...where.student,
+      studentCurrentYear: {
+        equals: currentYear,
+      },
+    };
+  }
+
+  if (quartetlyId) {
+    where.Quartetly = {
+      quartetlyId: {
+        contains: quartetlyId,
+      },
+    };
+  }
+
   const collectionStudent = await prisma.collectionStudent.findMany({
     skip: (page - 1) * take,
     take,
@@ -46,22 +75,7 @@ export const getCollectionStudent = async (
         },
       },
     },
-    where: {
-      student: {
-        studentFullName: {
-          contains: searchQuery,
-          mode: "insensitive",
-        },
-        studentCurrentYear: {
-          equals: currentYear,
-        },
-      },
-      Quartetly: {
-        quartetlyId: {
-          contains: quartetlyId,
-        },
-      },
-    },
+    where,
     orderBy: {
       collectionStudentAmountOwed: "desc",
     },
