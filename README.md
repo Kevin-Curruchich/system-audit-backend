@@ -21,6 +21,14 @@ This is an [ExpressJS](https://expressjs.com/) REST API that uses [Prisma](https
 - Postgres
 - TypeScript
 
+## Deploy on develop environment
+
+```
+railway login
+railway environment develop
+railway up
+```
+
 ## 💁‍♀️ How to use
 
 - Install dependencies `yarn`

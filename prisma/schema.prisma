@@ -1,18 +1,138 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Student {
+  studentId          String              @id @default(uuid())
+  studentName        String
+  studentLastName    String
+  studentFullName    String
+  studentDni         String
+  studentPhone       String
+  studentEmail       String              @unique
+  studentStartDate   DateTime            @db.Date
+  createdAt          DateTime            @default(now()) @db.Date
+  studentTypeId      String
+  studentCurrentYear Int?
+  studentStatusId    String
+  studentAddress     String?
+  studentBirthDate   DateTime?           @db.Date
+  studentCountry     String?
+  studentCity        String?
+  studentProvince    String?
+  CollectionStudent  CollectionStudent[]
+  Payment            Payment[]
+  StudentStatus      StudentStatus       @relation(fields: [studentStatusId], references: [studentStatusId])
+  StudentType        StudentType         @relation(fields: [studentTypeId], references: [studentTypeId])
+  User               User[]
 }
 
-model Todo {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  text      String
-  completed Boolean
+model User {
+  userId       String         @id @default(uuid())
+  userName     String
+  userEmail    String         @unique
+  userPassword String
+  roleId       String
+  Role         Role           @relation(fields: [roleId], references: [roleId])
+  studentId    String?
+  Student      Student?       @relation(fields: [studentId], references: [studentId])
+  RefreshToken RefreshToken[]
+}
+
+model Role {
+  roleId   String @id @default(uuid())
+  roleName String
+  User     User[]
+}
+
+model RefreshToken {
+  id          String   @id @unique @default(uuid())
+  hashedToken String
+  userId      String
+  User        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model StudentType {
+  studentTypeId   String    @id @default(uuid())
+  studentTypeName String
+  studentTypeDesc String
+  student         Student[]
+}
+
+model StudentStatus {
+  studentStatusId   String    @id @default(uuid())
+  studentStatusName String
+  studentStatusDesc String
+  student           Student[]
+}
+
+model CollectionType {
+  collectionTypeId   String       @id @default(uuid())
+  collectionTypeName String
+  collectionTypeDesc String
+  collection         Collection[]
+}
+
+model Collection {
+  collectionId           String              @id @default(uuid())
+  collectionName         String
+  collectionDesc         String
+  collectionTypeId       String
+  collectionBaseAmount   Float
+  collectionStudentApply Json[]
+  collectionType         CollectionType      @relation(fields: [collectionTypeId], references: [collectionTypeId])
+  CollectionStudent      CollectionStudent[]
+}
+
+model Quartetly {
+  quartetlyId       String              @id @default(uuid())
+  quartetlyName     String
+  quartetlyStart    DateTime            @db.Date
+  quartetlyEnd      DateTime            @db.Date
+  QuartetlyStatus   QuartetlyStatus?    @relation(fields: [quartetlyStatusId], references: [quartetlyStatusId])
+  quartetlyStatusId String?
+  quartetly         CollectionStudent[]
+}
+
+model QuartetlyStatus {
+  quartetlyStatusId   String      @id @default(uuid())
+  quartetlyStatusName String
+  quartetlyStatusDesc String
+  quartetly           Quartetly[]
+}
+
+model CollectionStudent {
+  collectionStudentId         String     @id @default(uuid())
+  collectionId                String
+  studentId                   String
+  collectionStudentAmountOwed Float
+  collectionStudentAmountPaid Float      @default(0)
+  collectionStudentDate       DateTime   @db.Date
+  collectionStudentUpdateDate DateTime   @db.Date
+  collectionDescription       String
+  collection                  Collection @relation(fields: [collectionId], references: [collectionId])
+  student                     Student    @relation(fields: [studentId], references: [studentId])
+  Payment                     Payment[]
+  Quartetly                   Quartetly? @relation(fields: [quartetlyQuartetlyId], references: [quartetlyId])
+  quartetlyQuartetlyId        String?
+}
+
+model Payment {
+  paymentId           String            @id @default(uuid())
+  studentId           String
+  collectionStudentId String
+  paymentDate         DateTime          @db.Date
+  paymentAmount       Float
+  paymentDescription  String
+  paymentSlip         String?
+  collectionStudent   CollectionStudent @relation(fields: [collectionStudentId], references: [collectionStudentId])
+  student             Student           @relation(fields: [studentId], references: [studentId])
 }
